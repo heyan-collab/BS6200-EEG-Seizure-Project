@@ -1,0 +1,11 @@
+.idea/
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+env/
+*.pt
+*.pth
+data(1).csv
+*.log
