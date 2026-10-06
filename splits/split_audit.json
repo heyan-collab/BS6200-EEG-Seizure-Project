@@ -1,0 +1,100 @@
+{
+  "status": "PASS_WITH_WARNINGS",
+  "files": {
+    "data": "D:\\留学\\sem1\\BS6200\\6200-group project\\Epileptic Seizure Recognition.csv",
+    "data_encoding": "utf-8-sig",
+    "data_sha256": "5ac55c71de5df20d2f47c39300c5b61df18ac5d1c40315e586310b794c32a98b",
+    "split": "D:\\留学\\sem1\\BS6200\\6200-group project\\shared_train_test_split.csv",
+    "split_encoding": "utf-16",
+    "split_sha256": "d4890273820bffc0ba12067adeafcaf9f38bb143c9e00756d874779dd1b0b3c8"
+  },
+  "rows": 11500,
+  "sample_id_column": null,
+  "group_id_column": null,
+  "group_leakage_count": null,
+  "split_counts": {
+    "development": 9200,
+    "final_test": 2300
+  },
+  "split_fractions": {
+    "development": 0.8,
+    "final_test": 0.2
+  },
+  "original_label_counts": {
+    "development": {
+      "1": 1840,
+      "2": 1840,
+      "3": 1840,
+      "4": 1840,
+      "5": 1840
+    },
+    "final_test": {
+      "1": 460,
+      "2": 460,
+      "3": 460,
+      "4": 460,
+      "5": 460
+    }
+  },
+  "binary_label_counts": {
+    "development": {
+      "0": 7360,
+      "1": 1840
+    },
+    "final_test": {
+      "0": 1840,
+      "1": 460
+    }
+  },
+  "label_final_test_fractions": {
+    "1": 0.2,
+    "2": 0.2,
+    "3": 0.2,
+    "4": 0.2,
+    "5": 0.2
+  },
+  "development_fold_label_counts": {
+    "0": {
+      "1": 368,
+      "2": 368,
+      "3": 368,
+      "4": 368,
+      "5": 368
+    },
+    "1": {
+      "1": 368,
+      "2": 368,
+      "3": 368,
+      "4": 368,
+      "5": 368
+    },
+    "2": {
+      "1": 368,
+      "2": 368,
+      "3": 368,
+      "4": 368,
+      "5": 368
+    },
+    "3": {
+      "1": 368,
+      "2": 368,
+      "3": 368,
+      "4": 368,
+      "5": 368
+    },
+    "4": {
+      "1": 368,
+      "2": 368,
+      "3": 368,
+      "4": 368,
+      "5": 368
+    }
+  },
+  "failures": [],
+  "warnings": [
+    "No stable unique sample ID was identified; the final file will rely on fragile row_index values",
+    "No group ID was supplied, so recording/patient-level leakage could not be checked"
+  ],
+  "output_split": "D:\\留学\\sem1\\BS6200\\6200-group project\\split_validation_output\\shared_split_with_cv.csv",
+  "output_split_sha256": "b5efd0579c769df80998247ded348b6b4af506b3da9d3be35fcc893f0c62bd03"
+}
