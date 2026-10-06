@@ -1,0 +1,5 @@
+example,row_index,y_true,y_pred,predicted_class_probability
+correct_seizure,20,1,1,0.9999993
+correct_non_seizure,17,0,0,0.99999666
+false_negative,449,1,0,0.983194
+false_positive,2560,0,1,0.9994764

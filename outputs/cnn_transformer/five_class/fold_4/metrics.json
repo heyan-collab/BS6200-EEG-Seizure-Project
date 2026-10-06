@@ -1,0 +1,11 @@
+{
+  "fold": 4,
+  "best_epoch": 32,
+  "training_seconds": 268.2926504999996,
+  "accuracy": 0.8130434782608695,
+  "balanced_accuracy": 0.8130434782608695,
+  "macro_precision": 0.8131439280317568,
+  "macro_recall": 0.8130434782608695,
+  "macro_f1": 0.8116883987905054,
+  "macro_roc_auc_ovr": 0.9652406515831758
+}

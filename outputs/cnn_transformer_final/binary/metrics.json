@@ -1,0 +1,16 @@
+{
+  "task": "binary",
+  "epochs": 22,
+  "seed": 6200,
+  "development_samples": 9200,
+  "test_samples": 2300,
+  "training_seconds": 217.97434440000143,
+  "accuracy": 0.99,
+  "balanced_accuracy": 0.9855978260869565,
+  "precision": 0.9719222462203023,
+  "recall": 0.9782608695652174,
+  "specificity": 0.9929347826086956,
+  "f1": 0.9750812567713976,
+  "roc_auc": 0.9991446124763705,
+  "pr_auc_ap": 0.9970228804487763
+}

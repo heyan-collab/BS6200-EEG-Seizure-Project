@@ -1,0 +1,14 @@
+{
+  "task": "five_class",
+  "epochs": 32,
+  "seed": 6200,
+  "development_samples": 9200,
+  "test_samples": 2300,
+  "training_seconds": 296.5718205000012,
+  "accuracy": 0.7878260869565218,
+  "balanced_accuracy": 0.7878260869565217,
+  "macro_precision": 0.7858792092628712,
+  "macro_recall": 0.7878260869565217,
+  "macro_f1": 0.7804672154360627,
+  "macro_roc_auc_ovr": 0.9620978260869565
+}

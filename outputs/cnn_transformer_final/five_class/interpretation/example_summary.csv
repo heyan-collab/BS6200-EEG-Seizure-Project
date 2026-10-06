@@ -1,0 +1,5 @@
+example,row_index,y_true,y_pred,predicted_class_probability
+correct_class_1,20,1,1,0.9999969
+correct_class_3,17,3,3,0.57312703
+class_3_predicted_as_2,402,3,2,0.99121594
+class_4_predicted_as_5,589,4,5,0.6451282

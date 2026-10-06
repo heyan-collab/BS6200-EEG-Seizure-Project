@@ -1,0 +1,33 @@
+{
+  "model": "CNN-Transformer",
+  "cnn_channels": [
+    32,
+    64
+  ],
+  "kernel_sizes": [
+    7,
+    5
+  ],
+  "batch_normalization": true,
+  "d_model": 64,
+  "attention_heads": 4,
+  "transformer_layers": 2,
+  "feedforward_dimension": 128,
+  "position_encoding": "learnable",
+  "temporal_pooling": "mean + max",
+  "transformer_dropout": 0.1,
+  "classifier_dropout": 0.2,
+  "dropout": 0.2,
+  "feature_set": "F1: X1-X178",
+  "seed": 6200,
+  "batch_size": 64,
+  "max_epochs": 100,
+  "early_stopping_patience": 15,
+  "learning_rate": 0.001,
+  "optimizer": "Adam",
+  "loss": "CrossEntropyLoss",
+  "scaling": "Per-feature StandardScaler fitted on each training fold",
+  "binary_threshold": 0.5,
+  "pr_auc_convention": "Average precision",
+  "multiclass_auc_convention": "Macro one-vs-rest"
+}
