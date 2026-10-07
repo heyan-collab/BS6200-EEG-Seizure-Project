@@ -1,0 +1,16 @@
+{
+  "model": "MultiRocketClassifier",
+  "aeon_version": "1.6.0",
+  "random_state": 6200,
+  "primary_task": "binary",
+  "primary_metric": "seizure_class_f1",
+  "feature_set": "raw_X1_to_X178",
+  "official_n_kernels": null,
+  "max_dilations_per_kernel": 32,
+  "n_features_per_kernel": 4,
+  "class_weight_candidates": [
+    null,
+    "balanced"
+  ],
+  "final_test_locked": true
+}
