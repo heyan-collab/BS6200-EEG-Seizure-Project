@@ -5,12 +5,14 @@
   "primary_task": "binary",
   "primary_metric": "seizure_class_f1",
   "feature_set": "raw_X1_to_X178",
-  "official_n_kernels": null,
+  "official_n_kernels": 10000,
+  "official_class_weight": "none",
   "max_dilations_per_kernel": 32,
   "n_features_per_kernel": 4,
   "class_weight_candidates": [
     null,
     "balanced"
   ],
+  "selection_basis": "five-fold mean seizure-class F1",
   "final_test_locked": true
 }
