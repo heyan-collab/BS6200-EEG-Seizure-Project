@@ -1,0 +1,56 @@
+{
+  "task": "five",
+  "shared_split_file": "splits/shared_split_with_cv.csv",
+  "development_n": 9200,
+  "final_test_n": 2300,
+  "cv_folds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "maximum_epochs_per_cv_fold": 25,
+  "cv_best_epochs": [
+    25,
+    23,
+    12,
+    10,
+    19
+  ],
+  "final_retraining_epochs": 19,
+  "cv_summary": {
+    "accuracy": {
+      "mean": 0.797391304347826,
+      "sd": 0.020564028139159172
+    },
+    "balanced_accuracy": {
+      "mean": 0.7973913043478262,
+      "sd": 0.02056402813915919
+    },
+    "macro_precision": {
+      "mean": 0.7997659069254375,
+      "sd": 0.021737460266334236
+    },
+    "macro_recall": {
+      "mean": 0.7973913043478262,
+      "sd": 0.02056402813915919
+    },
+    "macro_f1": {
+      "mean": 0.7936129212293472,
+      "sd": 0.021534694361264695
+    },
+    "macro_roc_auc_ovr": {
+      "mean": 0.9624890713610587,
+      "sd": 0.006996444970057338
+    }
+  },
+  "final_test_metrics": {
+    "accuracy": 0.7578260869565218,
+    "balanced_accuracy": 0.7578260869565218,
+    "macro_precision": 0.7857389870899578,
+    "macro_recall": 0.7578260869565218,
+    "macro_f1": 0.7496372620453012,
+    "macro_roc_auc_ovr": 0.956381379962193
+  }
+}

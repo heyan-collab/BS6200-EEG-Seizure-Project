@@ -1,0 +1,21 @@
+{
+  "data": "data(1).csv",
+  "split": "splits/shared_split_with_cv.csv",
+  "output": "results_cnn_bilstm_sharedsplit",
+  "task": "both",
+  "epochs": 3,
+  "batch_size": 128,
+  "lr": 0.001,
+  "patience": 5,
+  "no_class_weights": false,
+  "quick": true,
+  "seed": 6200,
+  "device": "cpu",
+  "run_directory": "C:\\Users\\heyan\\PycharmProjects\\PythonProject\\BS6200_CNN_BiLSTM_reference\\results_cnn_bilstm_sharedsplit\\quick_20261007_122128",
+  "development_n": 9200,
+  "final_test_n": 2300,
+  "fold_ids_used": [
+    0,
+    1
+  ]
+}
