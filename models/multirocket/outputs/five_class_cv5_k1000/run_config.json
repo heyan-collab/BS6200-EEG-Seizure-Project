@@ -1,0 +1,20 @@
+{
+  "data": "D:\\留学\\sem1\\BS6200\\6200-group project\\Epileptic Seizure Recognition.csv",
+  "split": "D:\\留学\\sem1\\BS6200\\BS6200-EEG-Seizure-Project\\splits\\shared_split_with_cv.csv",
+  "task": "five_class",
+  "fold": "all",
+  "n_kernels": 1000,
+  "max_dilations_per_kernel": 32,
+  "n_features_per_kernel": 4,
+  "class_weight": "none",
+  "n_jobs": 1,
+  "seed": 6200,
+  "smoke_test": false,
+  "output_dir": "D:\\留学\\sem1\\BS6200\\BS6200-EEG-Seizure-Project\\models\\multirocket\\outputs\\five_class_cv5_k1000",
+  "python": "3.12.15",
+  "aeon": "1.6.0",
+  "scikit_learn": "1.9.1",
+  "numpy": "2.3.5",
+  "pandas": "3.0.6",
+  "final_test_accessed": false
+}

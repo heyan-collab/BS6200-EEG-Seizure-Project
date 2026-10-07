@@ -38,6 +38,12 @@ python models/multirocket/train_multirocket.py --data "D:\留学\sem1\BS6200\620
 
 See `RESULTS.md` for the five-fold results and ablation studies. The final-test partition remains locked.
 
+The required five-class experiment uses the same raw input and fixed folds:
+
+```bash
+python models/multirocket/train_multirocket.py --data "D:\留学\sem1\BS6200\6200-group project\Epileptic Seizure Recognition.csv" --task five_class --fold all --n-kernels 10000 --class-weight none --n-jobs 1 --seed 6200 --output-dir models/multirocket/outputs/five_class_cv5_k10000_final
+```
+
 ## Outputs
 
 Each run writes:
