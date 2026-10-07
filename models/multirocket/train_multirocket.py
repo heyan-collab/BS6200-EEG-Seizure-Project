@@ -177,19 +177,28 @@ def binary_metrics(y_true: np.ndarray, y_pred: np.ndarray, score: np.ndarray) ->
     }
 
 
-def multiclass_metrics(y_true: np.ndarray, y_pred: np.ndarray, score: np.ndarray) -> dict:
+def multiclass_metrics(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    score: np.ndarray,
+    class_labels: np.ndarray,
+) -> dict:
+    if score.ndim != 2 or score.shape[1] != len(class_labels):
+        raise ValueError("Multiclass decision-score columns do not match model classes")
+    # sklearn's multiclass roc_auc_score requires probabilities that sum to one.
+    # RidgeClassifierCV provides decision scores instead, so compute the standard
+    # one-vs-rest AUC for each class directly and take their unweighted mean.
+    per_class_auc = [
+        roc_auc_score((y_true == class_label).astype(int), score[:, position])
+        for position, class_label in enumerate(class_labels)
+    ]
     return {
         "accuracy": accuracy_score(y_true, y_pred),
         "balanced_accuracy": balanced_accuracy_score(y_true, y_pred),
         "macro_precision": precision_score(y_true, y_pred, average="macro", zero_division=0),
         "macro_recall": recall_score(y_true, y_pred, average="macro", zero_division=0),
         "macro_f1": f1_score(y_true, y_pred, average="macro", zero_division=0),
-        "macro_roc_auc_ovr": roc_auc_score(
-            y_true,
-            score,
-            multi_class="ovr",
-            average="macro",
-        ),
+        "macro_roc_auc_ovr": float(np.mean(per_class_auc)),
     }
 
 
@@ -299,7 +308,12 @@ def main() -> int:
             score_frame = {"y_score": score}
             labels = [0, 1]
         else:
-            metrics = multiclass_metrics(y_validation, y_pred, score)
+            metrics = multiclass_metrics(
+                y_validation,
+                y_pred,
+                score,
+                model.classes_,
+            )
             score_frame = {
                 f"score_class_{class_label}": score[:, position]
                 for position, class_label in enumerate(model.classes_)
