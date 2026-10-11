@@ -1,0 +1,94 @@
+{
+  "metrics": {
+    "accuracy": {
+      "mean": 0.7002173913043478,
+      "sd": 0.008367447501703354
+    },
+    "balanced_accuracy": {
+      "mean": 0.7002173913043478,
+      "sd": 0.008367447501703373
+    },
+    "macro_precision": {
+      "mean": 0.7027092957566625,
+      "sd": 0.008130463175198105
+    },
+    "macro_recall": {
+      "mean": 0.7002173913043478,
+      "sd": 0.008367447501703373
+    },
+    "macro_f1": {
+      "mean": 0.7002779138714563,
+      "sd": 0.008066282227678212
+    },
+    "macro_roc_auc": {
+      "mean": 0.9228859360231569,
+      "sd": 0.0038812787268283793
+    }
+  },
+  "metadata": {
+    "std_ddof": 0,
+    "std_convention": "Population SD across five folds",
+    "development_samples": 9200,
+    "n_folds": 5,
+    "feature_set": "F1 Raw EEG (x1\u2013x178)",
+    "class_order": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "label_encoding": "Model outputs 0\u20134 map to original Classes 1\u20135",
+    "parameters": {
+      "objective": "multi:softprob",
+      "num_class": 5,
+      "tree_method": "hist",
+      "device": "cpu",
+      "eval_metric": "mlogloss",
+      "random_state": 42,
+      "n_jobs": 4,
+      "max_depth": 8,
+      "learning_rate": 0.1,
+      "n_estimators": 200,
+      "min_child_weight": 3,
+      "subsample": 0.85,
+      "colsample_bytree": 0.85,
+      "reg_alpha": 0.0,
+      "reg_lambda": 1.0
+    },
+    "macro_roc_auc_convention": "sklearn average=macro, multi_class=ovr, labels=[1,2,3,4,5]",
+    "group_split_generation_seed": 6200,
+    "model_seed": 42,
+    "tuning_performed": false,
+    "model_selection_performed": false,
+    "final_test_used_for_cv": false,
+    "final_model_retrained": false,
+    "existing_cv_reproducibility_checks_passed": true,
+    "saved_final_metrics_verified": {
+      "accuracy": 0.701304347826087,
+      "balanced_accuracy": 0.7013043478260869,
+      "macro_precision": 0.7038508014520042,
+      "macro_recall": 0.7013043478260869,
+      "macro_f1": 0.7009044063115801,
+      "macro_roc_auc": 0.9248315217391305
+    },
+    "saved_final_artifact_paths": {
+      "confusion_matrix": "results/final/confusion_matrix_test.csv",
+      "predictions": "results/final/predictions.csv",
+      "probabilities": "results/final/five_class_protocol_test_probabilities.csv"
+    },
+    "versions": {
+      "xgboost": "3.0.5",
+      "sklearn": "1.8.0",
+      "numpy": "2.3.5",
+      "pandas": "2.2.3"
+    },
+    "input_sha256": {
+      "data/data.csv": "3c8c2a5055344738112f23cb56ebdb8b53b8e411ea9cad83ecb590624df69f36",
+      "data/shared_train_test_split.csv": "d4890273820bffc0ba12067adeafcaf9f38bb143c9e00756d874779dd1b0b3c8",
+      "data/shared_split_with_cv.csv": "b5efd0579c769df80998247ded348b6b4af506b3da9d3be35fcc893f0c62bd03",
+      "results/tuning/best_parameters.json": "7fd9e0df1fb9afbbbc7720e4e6c9b0a409ef7eaa88b8010854e5f94754ae2d53",
+      "results/final/five_class_protocol_metrics.json": "69c1c5c26cda6355dd964ba3ea3152cd6214d5cd6b036c980477f23879d573f7"
+    }
+  }
+}

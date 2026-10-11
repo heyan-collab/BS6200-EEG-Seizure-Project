@@ -1,0 +1,83 @@
+{
+  "metrics": {
+    "accuracy": {
+      "mean": 0.9738043478260868,
+      "sd": 0.0021020738701971347
+    },
+    "balanced_accuracy": {
+      "mean": 0.95,
+      "sd": 0.002845161901001655
+    },
+    "seizure_precision": {
+      "mean": 0.9566397331634666,
+      "sd": 0.007766092112758812
+    },
+    "seizure_recall": {
+      "mean": 0.9103260869565217,
+      "sd": 0.004547065361598244
+    },
+    "specificity": {
+      "mean": 0.9896739130434782,
+      "sd": 0.0018924440594000347
+    },
+    "seizure_f1": {
+      "mean": 0.9328966437156332,
+      "sd": 0.005282604489706711
+    },
+    "roc_auc": {
+      "mean": 0.9952249970463137,
+      "sd": 0.0010874499031058847
+    },
+    "pr_auc": {
+      "mean": 0.9840199765773141,
+      "sd": 0.0025096013406491514
+    }
+  },
+  "metadata": {
+    "std_ddof": 0,
+    "std_convention": "Population SD across 5 validation folds",
+    "n_folds": 5,
+    "development_samples": 9200,
+    "validation_samples_per_fold": 1840,
+    "feature_set": "F1 Raw EEG (x1\u2013x178)",
+    "positive_class": "Seizure = 1 (original y=1)",
+    "negative_class": "Non-seizure = 0 (original y=2,3,4,5)",
+    "parameters": {
+      "objective": "binary:logistic",
+      "tree_method": "hist",
+      "device": "cpu",
+      "eval_metric": "logloss",
+      "random_state": 42,
+      "n_jobs": 4,
+      "subsample": 0.85,
+      "reg_lambda": 10.0,
+      "reg_alpha": 0.0,
+      "n_estimators": 300,
+      "min_child_weight": 3,
+      "max_depth": 6,
+      "learning_rate": 0.2,
+      "colsample_bytree": 0.85
+    },
+    "probability_threshold": 0.5,
+    "pr_auc_convention": "sklearn average_precision_score, positive label 1",
+    "group_split_generation_seed": 6200,
+    "model_seed": 42,
+    "tuning_performed": false,
+    "model_selection_performed": false,
+    "final_test_used": false,
+    "existing_cv_reproducibility_checks_passed": true,
+    "versions": {
+      "xgboost": "3.0.5",
+      "sklearn": "1.8.0",
+      "numpy": "2.3.5",
+      "pandas": "2.2.3"
+    },
+    "input_sha256": {
+      "data/data.csv": "3c8c2a5055344738112f23cb56ebdb8b53b8e411ea9cad83ecb590624df69f36",
+      "data/shared_train_test_split.csv": "d4890273820bffc0ba12067adeafcaf9f38bb143c9e00756d874779dd1b0b3c8",
+      "data/shared_split_with_cv.csv": "b5efd0579c769df80998247ded348b6b4af506b3da9d3be35fcc893f0c62bd03",
+      "results/binary/tuning/best_parameters.json": "63d11420952ab78bcae2898cf8d986d434f016a954477896cb6f9bb5b66e5fe5",
+      "results/binary/tuning/cv_summary.json": "772b31c8c1458bb8d8d1daff831e1a9228bf94bdf1c8a75e849bcb99b71d87a0"
+    }
+  }
+}
