@@ -1,0 +1,8 @@
+Item,Status,Action
+Latest Excel priority,Official aggregate source,Overall rankings and displayed final metrics follow prefilled3(1).xlsx.
+MultiRocket five-class,Use 0.8442 Macro F1,Replace previous 0.8569 visualizations; sample-level hard labels use y_pred_base.
+XGBoost five-class,Use 0.7009 Macro F1 and 0.7013 Accuracy,Replace previous 0.7107 / 0.7113 visualizations.
+TCN final results,Use Binary F1 0.9782 and Five-class Macro F1 0.7940,Latest workbook already contains the final numbers.
+CNN-Transformer Binary CV,Workbook says CV F1 Mean = 0.000886,"Not changed; duplicated with CV Specificity SD, so confirm with teammate before using CV-stability ranking."
+CNN-Transformer Five-class CV,Workbook says CV Macro Recall Mean = 0.010583,"Not changed; duplicated with CV Macro Precision SD, so confirm with teammate before using CV-stability ranking."
+TCN Notes field,Some note text still says final test missing,Numeric values are used as supplied; note text can be cleaned later.
