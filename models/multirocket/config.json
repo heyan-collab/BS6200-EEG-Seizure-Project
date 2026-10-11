@@ -16,5 +16,7 @@
     "balanced"
   ],
   "selection_basis": "five-fold mean seizure-class F1",
-  "final_test_locked": true
+  "final_test_locked": false,
+  "final_test_evaluated_once": true,
+  "final_test_evaluation_date": "2026-10-11"
 }

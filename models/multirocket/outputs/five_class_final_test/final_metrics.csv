@@ -1,0 +1,2 @@
+accuracy,balanced_accuracy,macro_precision,macro_recall,macro_f1,macro_roc_auc_ovr,task,evaluation_set,n_train,n_evaluation,fit_seconds,predict_seconds,n_kernels,class_weight,seed
+0.8443478260869566,0.8443478260869565,0.8445423905660224,0.8443478260869565,0.8442326545201423,0.9688379017013233,five_class,final_test,9200,2300,230.4437951,31.5653870000001,10000,none,6200

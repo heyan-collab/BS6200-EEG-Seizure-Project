@@ -36,13 +36,18 @@ The selected configuration uses 10,000 kernels and no class weighting. Run all f
 python models/multirocket/train_multirocket.py --data "D:\留学\sem1\BS6200\6200-group project\Epileptic Seizure Recognition.csv" --task binary --fold all --n-kernels 10000 --class-weight none --n-jobs 1 --seed 6200 --output-dir models/multirocket/outputs/binary_cv5_k10000_final
 ```
 
-See `RESULTS.md` for the five-fold results and ablation studies. The final-test partition remains locked.
+See `RESULTS.md` for the five-fold results, ablation studies, and the one-time final-test evaluation.
 
 The required five-class experiment uses the same raw input and fixed folds:
 
 ```bash
 python models/multirocket/train_multirocket.py --data "D:\留学\sem1\BS6200\6200-group project\Epileptic Seizure Recognition.csv" --task five_class --fold all --n-kernels 10000 --class-weight none --n-jobs 1 --seed 6200 --output-dir models/multirocket/outputs/five_class_cv5_k10000_final
 ```
+
+The frozen model was evaluated once on the shared final-test partition with
+`evaluate_final_multirocket.py`. The output folders are `binary_final_test` and
+`five_class_final_test`. Do not rerun the final test for model selection or
+hyperparameter tuning.
 
 ## Outputs
 

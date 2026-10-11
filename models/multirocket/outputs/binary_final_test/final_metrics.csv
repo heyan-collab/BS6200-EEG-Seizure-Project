@@ -1,0 +1,2 @@
+accuracy,balanced_accuracy,precision,recall,specificity,f1,roc_auc,average_precision,tn,fp,fn,tp,task,evaluation_set,n_train,n_evaluation,fit_seconds,predict_seconds,n_kernels,class_weight,seed
+0.9939130434782608,0.9864130434782609,0.9955555555555555,0.9739130434782609,0.9989130434782608,0.9846153846153847,0.9995451323251417,0.998614829567955,1838,2,12,448,binary,final_test,9200,2300,263.5771421999998,34.814950299999964,10000,none,6200

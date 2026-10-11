@@ -10,7 +10,7 @@
 - Class weight: none
 - Random seed: 6200
 - Primary selection metric: seizure-class F1
-- Final test accessed: no
+- Final test accessed: yes, once after freezing the configuration
 
 ## Final five-fold cross-validation
 
@@ -26,6 +26,21 @@
 | Average precision | 0.9990 | 0.0008 |
 
 The fold-level F1 scores were 0.9836, 0.9864, 0.9835, 0.9863, and 0.9863. The small standard deviation indicates stable performance across the predefined folds.
+
+## Binary final-test evaluation
+
+| Metric | Final test |
+|---|---:|
+| Accuracy | 0.9939 |
+| Balanced accuracy | 0.9864 |
+| Precision | 0.9956 |
+| Recall / sensitivity | 0.9739 |
+| Specificity | 0.9989 |
+| F1 | **0.9846** |
+| AUROC | 0.9995 |
+| Average precision / PR-AUC | 0.9986 |
+
+The final-test confusion counts were TN = 1,838, FP = 2, FN = 12, and TP = 448. Final-test F1 was only 0.0006 below the five-fold CV mean, indicating close agreement between CV and held-out performance.
 
 ## Class-weight ablation (1,000 kernels)
 
@@ -58,6 +73,27 @@ Increasing the kernel count produced a modest F1 improvement and slightly better
 
 The fold-level Macro F1 scores were 0.8512, 0.8605, 0.8500, 0.8457, and 0.8431.
 
+## Five-class final-test evaluation
+
+| Metric | Final test |
+|---|---:|
+| Accuracy | 0.8443 |
+| Balanced accuracy | 0.8443 |
+| Macro precision | 0.8445 |
+| Macro recall | 0.8443 |
+| Macro F1 | **0.8442** |
+| Macro ROC-AUC (one-vs-rest) | 0.9688 |
+
+| Original class | Precision | Recall | F1 |
+|---:|---:|---:|---:|
+| 1 | 0.9891 | 0.9826 | **0.9858** |
+| 2 | 0.7927 | 0.7565 | 0.7742 |
+| 3 | 0.7609 | 0.7609 | 0.7609 |
+| 4 | 0.8755 | 0.8717 | 0.8736 |
+| 5 | 0.8045 | 0.8500 | 0.8266 |
+
+The main final-test errors were class 2 predicted as class 3 (92 segments), class 3 predicted as class 2 (82), class 4 predicted as class 5 (57), and class 5 predicted as class 4 (50). The final-test Macro F1 was 0.0059 below the CV mean and reproduced the same dominant confusion pairs.
+
 ### Five-class kernel-count study
 
 | Kernels | Accuracy | Macro F1 | Macro ROC-AUC | Macro F1 standard deviation |
@@ -87,4 +123,4 @@ Strengths observed here are high seizure-class performance, low fold-to-fold var
 
 ## Reproducibility notes
 
-The reported values come from the CSV files under `outputs/binary_cv5_k10000_final`. Preprocessing and model fitting are performed independently inside each training fold. The locked final-test partition was not read during these experiments.
+CV values come from the selected 10,000-kernel output folders. Preprocessing and model fitting were performed independently inside each training fold. After the configuration was frozen, separate models were trained on all 9,200 development samples and evaluated once on the 2,300-sample final test set. Final-test metrics use the base MultiRocket predictions. The probability files use logistic calibration fitted only on development OOF decision scores; the final test was not used to fit the calibrator.

@@ -1,0 +1,22 @@
+{
+  "data": "D:\\留学\\sem1\\BS6200\\6200-group project\\Epileptic Seizure Recognition.csv",
+  "split": "D:\\留学\\sem1\\BS6200\\BS6200-EEG-Seizure-Project\\splits\\shared_split_with_cv.csv",
+  "task": "binary",
+  "oof": "D:\\留学\\sem1\\BS6200\\BS6200-EEG-Seizure-Project\\models\\multirocket\\outputs\\binary_cv5_k10000_final\\oof_predictions.csv",
+  "output_dir": "D:\\留学\\sem1\\BS6200\\BS6200-EEG-Seizure-Project\\models\\multirocket\\outputs\\binary_final_test",
+  "n_jobs": 1,
+  "smoke_test": false,
+  "n_kernels_used": 10000,
+  "max_dilations_per_kernel": 32,
+  "n_features_per_kernel": 4,
+  "class_weight": "none",
+  "seed": 6200,
+  "calibration": "LogisticRegression fitted on development OOF decision scores",
+  "metrics_use_base_predictions": true,
+  "final_test_accessed": true,
+  "python": "3.12.15",
+  "aeon": "1.6.0",
+  "scikit_learn": "1.9.1",
+  "numpy": "2.3.5",
+  "pandas": "3.0.6"
+}
