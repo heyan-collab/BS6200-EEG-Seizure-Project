@@ -20,6 +20,11 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
 
+FINAL_ONLY = True
+FINAL_CHANNELS = 32
+FINAL_CLASS_WEIGHT = False
+FINAL_MULTI_CHANNELS = 32
+
 EVALUATE_FINAL_TEST = False
 QUICK_MODE = False
 
@@ -268,6 +273,7 @@ def run_cv(task, cfg, X, y_raw, split, fold):
 
     print(f"\n>>> [{task}] {cfg['name']}")
     for k in range(5):
+        fold_t0 = time.time()
         tr_all = dev_idx[fold[dev_idx] != k]
         va = dev_idx[fold[dev_idx] == k]
 
@@ -290,6 +296,7 @@ def run_cv(task, cfg, X, y_raw, split, fold):
 
         if EVALUATE_FINAL_TEST:
             test_probs.append(predict_proba(model, norm(X[test_idx]), task))
+        hist["seconds"] = time.time() - fold_t0
 
     fold_df = pd.DataFrame(rows).set_index("fold")
     summary = pd.DataFrame({"Mean": fold_df.mean(), "Standard deviation": fold_df.std()})
@@ -303,6 +310,7 @@ def run_cv(task, cfg, X, y_raw, split, fold):
         "oof_prob": oof, "oof_true": y[dev_idx], "histories": histories,
         "test_prob": np.mean(test_probs, axis=0) if test_probs else None,
         "test_true": y[test_idx], "seconds": seconds,
+        "dev_idx": dev_idx, "test_idx": test_idx,
     }
 
 
@@ -327,8 +335,8 @@ plt.rcParams.update({
 })
 
 
-def savefig(fig, name):
-    path = os.path.join(FIG_DIR, name)
+def savefig(fig, name, folder=None):
+    path = os.path.join(folder or FIG_DIR, name)
     fig.tight_layout()
     fig.savefig(path, dpi=160)
     plt.close(fig)
@@ -365,7 +373,7 @@ def plot_binary_curves(res):
     return savefig(fig, "binary_roc_pr_cv.png")
 
 
-def plot_confusion(cm, labels, title, name, figsize=(4.6, 4)):
+def plot_confusion(cm, labels, title, name, figsize=(4.6, 4), folder=None):
     norm = cm / cm.sum(1, keepdims=True)
     fig, ax = plt.subplots(figsize=figsize)
     ax.imshow(norm, cmap=BLUES, vmin=0, vmax=1)
@@ -379,7 +387,7 @@ def plot_confusion(cm, labels, title, name, figsize=(4.6, 4)):
     ax.set(xlabel="Predicted", ylabel="True", title=title)
     for s in ax.spines.values():
         s.set_visible(False)
-    return savefig(fig, name)
+    return savefig(fig, name, folder)
 
 
 def plot_fold_metrics(res, metrics, name, title):
@@ -640,6 +648,163 @@ def write_report(ctx):
 FOLD_OF_DEV = None
 
 
+def save_history(res, out_dir):
+    rows, runtime = [], []
+    for k, h in enumerate(res["histories"]):
+        for e, (tl, el) in enumerate(zip(h["train_loss"], h["es_loss"]), start=1):
+            rows.append({"fold": k, "epoch": e, "train_loss": tl, "early_stop_loss": el,
+                         "selected_epoch": int(e == h["best_epoch"])})
+        runtime.append({"fold": k, "epochs_trained": len(h["train_loss"]),
+                        "best_epoch": h["best_epoch"], "seconds": round(h.get("seconds", float("nan")), 1)})
+    runtime.append({"fold": "total", "epochs_trained": sum(r["epochs_trained"] for r in runtime),
+                    "best_epoch": "", "seconds": round(res["seconds"], 1)})
+    pd.DataFrame(rows).to_csv(os.path.join(out_dir, "training_history.csv"), index=False)
+    pd.DataFrame(runtime).to_csv(os.path.join(out_dir, "runtime.csv"), index=False)
+
+
+GROUP_METRIC_NAMES = {
+    "Accuracy": "accuracy", "Balanced accuracy": "balanced_accuracy", "Precision": "precision",
+    "Recall": "recall", "Specificity": "specificity", "F1": "f1", "AUROC": "roc_auc",
+    "Average precision": "pr_auc", "Macro precision": "macro_precision", "Macro recall": "macro_recall",
+    "Macro F1": "macro_f1", "Macro ROC-AUC (one-vs-rest)": "macro_roc_auc",
+}
+
+
+def save_group_format(res, metrics, out_dir):
+    os.makedirs(out_dir, exist_ok=True)
+    binary = res["task"] == "binary"
+    prefix = "tcn_binary" if binary else "tcn_five_class"
+    yt, yp = res["test_true"], res["test_prob"]
+
+    pd.DataFrame([{GROUP_METRIC_NAMES[k]: v for k, v in metrics.items()}]).to_csv(
+        os.path.join(out_dir, f"{prefix}_final_metrics.csv"), index=False)
+
+    if binary:
+        pred = pd.DataFrame({"row_index": res["test_idx"], "y_true": yt,
+                             "y_pred": (yp >= THRESHOLD).astype(int), "prob_1": yp})
+    else:
+        pred = pd.DataFrame({"row_index": res["test_idx"], "y_true": yt + 1, "y_pred": yp.argmax(1) + 1,
+                             **{f"prob_{c}": yp[:, c - 1] for c in range(1, 6)}})
+    pred.to_csv(os.path.join(out_dir, f"{prefix}_final_test_predictions.csv"), index=False)
+
+    pd.DataFrame({"fold": range(len(res["histories"])),
+                  "best_epoch": [h["best_epoch"] for h in res["histories"]],
+                  "train_seconds": [h.get("seconds", float("nan")) for h in res["histories"]]}
+                 ).to_csv(os.path.join(out_dir, f"{prefix}_final_training_log.csv"), index=False)
+
+
+def save_task_outputs(res, fold, out_dir):
+    os.makedirs(out_dir, exist_ok=True)
+    binary = res["task"] == "binary"
+    dev_idx, test_idx = res["dev_idx"], res["test_idx"]
+
+    def to_label(y):
+        return y if binary else y + 1
+
+    def pred_of(prob):
+        return (prob >= THRESHOLD).astype(int) if binary else prob.argmax(1)
+
+    def prob_cols(prob):
+        if binary:
+            return {"y_prob": prob}
+        return {f"prob_class_{c}": prob[:, c - 1] for c in range(1, 6)}
+
+    pd.DataFrame({"row_index": dev_idx, "cv_fold": fold[dev_idx],
+                  "y_true": to_label(res["oof_true"]),
+                  "y_pred": to_label(pred_of(res["oof_prob"])),
+                  **prob_cols(res["oof_prob"])}
+                 ).to_csv(os.path.join(out_dir, "oof_predictions.csv"), index=False)
+
+    save_history(res, out_dir)
+
+    metrics = None
+    if res["test_prob"] is not None:
+        yt, yp = res["test_true"], res["test_prob"]
+        metrics = binary_metrics(yt, yp) if binary else multi_metrics(yt, yp)
+        pd.DataFrame([metrics]).to_csv(os.path.join(out_dir, "final_metrics.csv"), index=False)
+        pd.DataFrame({"row_index": test_idx, "y_true": to_label(yt), "y_pred": to_label(pred_of(yp))}
+                     ).to_csv(os.path.join(out_dir, "final_predictions.csv"), index=False)
+        pd.DataFrame({"row_index": test_idx, **prob_cols(yp)}
+                     ).to_csv(os.path.join(out_dir, "final_probabilities.csv"), index=False)
+
+        labels = [0, 1] if binary else list(range(5))
+        names = ["Non-seizure", "Seizure"] if binary else [str(c) for c in range(1, 6)]
+        cm = confusion_matrix(yt, pred_of(yp), labels=labels)
+        pd.DataFrame(cm, index=[f"true_{n}" for n in names], columns=[f"pred_{n}" for n in names]
+                     ).to_csv(os.path.join(out_dir, "confusion_matrix.csv"))
+        title = "Binary" if binary else "Five-class"
+        plot_confusion(cm, names, f"{title} confusion matrix (final test)", "confusion_matrix.png",
+                       figsize=(4.6, 4) if binary else (6, 5.2), folder=out_dir)
+
+        save_group_format(res, metrics, os.path.join(OUTPUT_DIR, "update"))
+
+    print(f"Saved outputs in: {out_dir}/")
+    for f in sorted(os.listdir(out_dir)):
+        print(f"    {f}")
+    return metrics
+
+
+def write_readme(results, path):
+    b, m = results["binary"], results["multiclass"]
+    L = ["# TCN final outputs", ""]
+    L += ["## Configuration", "",
+          f"- Binary task: `y == 1` (seizure) versus `y in {{2, 3, 4, 5}}`; configuration `{b['cfg']['name']}` "
+          f"({b['cfg']['channels']} channels, class weight: {'balanced' if b['cfg']['class_weight'] else 'none'})",
+          f"- Five-class task: original labels 1-5; configuration `{m['cfg']['name']}` "
+          f"({m['cfg']['channels']} channels, cross-entropy loss, no class weight)",
+          f"- Architecture: TCN, {NUM_LEVELS} residual blocks, dilations 1-{2 ** (NUM_LEVELS - 1)}, "
+          f"kernel size {KERNEL_SIZE}, dropout {DROPOUT}, receptive field {receptive_field()} samples",
+          f"- Training: Adam (lr {LEARNING_RATE}), batch size {BATCH_SIZE}, up to {MAX_EPOCHS} epochs, "
+          f"early stopping patience {PATIENCE} on a stratified {int(EARLY_STOP_FRACTION * 100)}% split of the training folds",
+          f"- Input standardised with the mean and SD of each training fold",
+          f"- Random seed: {SEED}; device: `{DEVICE}`",
+          "- Split: `shared_split_with_cv.csv` (development folds 0-4 for cross-validation, `final_test` for evaluation)",
+          "- Final-test predictions are the average probability of the five fold models",
+          f"- Binary decision threshold: {THRESHOLD}; five-class prediction: class with the highest probability",
+          ""]
+    L += ["## Files", "",
+          "Each of `binary_final_test/` and `five_class_final_test/` contains:", "",
+          "| File | Contents |", "|---|---|",
+          "| `oof_predictions.csv` | Out-of-fold predictions for the 9,200 development segments (`row_index`, `cv_fold`, `y_true`, `y_pred`, probabilities) |",
+          "| `final_metrics.csv` | Metrics on the 2,300 final-test segments |",
+          "| `final_predictions.csv` | Predicted label per final-test segment (`row_index`, `y_true`, `y_pred`) |",
+          "| `final_probabilities.csv` | Predicted probability per final-test segment (binary: `y_prob` = P(seizure); five-class: `prob_class_1` ... `prob_class_5`) |",
+          "| `confusion_matrix.csv` / `.png` | Final-test confusion matrix (rows = true, columns = predicted) |",
+          "| `training_history.csv` | Train and early-stopping loss per fold and epoch; `selected_epoch = 1` marks the restored weights |",
+          "| `runtime.csv` | Epochs trained, selected epoch and wall-clock seconds per fold, plus total |",
+          "",
+          "Binary labels: 1 = seizure, 0 = non-seizure. Five-class labels use the original dataset coding "
+          "(1 seizure, 2 tumour region, 3 healthy region of a tumour patient, 4 eyes closed, 5 eyes open).",
+          ""]
+    L += ["## Results", ""]
+    for key, res, title in [("binary", b, "Binary"), ("multiclass", m, "Five-class")]:
+        L += [f"### {title}", "", "| Metric | CV mean | CV SD | Final test |", "|---|---:|---:|---:|"]
+        for metric in res["summary"].index:
+            L.append(f"| {metric} | {res['summary'].loc[metric, 'Mean']:.4f} | "
+                     f"{res['summary'].loc[metric, 'Standard deviation']:.4f} | {results[key + '_test'][metric]:.4f} |")
+        L += ["", f"Runtime: {res['seconds'] / 60:.1f} minutes for five folds.", ""]
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(L))
+    print(f"Saved: {path}")
+
+
+def run_final_only(X, y_raw, split, fold):
+    global EVALUATE_FINAL_TEST
+    EVALUATE_FINAL_TEST = True
+    results = {}
+    for task, cfg, folder in [
+        ("binary", make_cfg(FINAL_CHANNELS, FINAL_CLASS_WEIGHT), "binary_final_test"),
+        ("multiclass", make_cfg(FINAL_MULTI_CHANNELS, False), "five_class_final_test"),
+    ]:
+        res = run_cv(task, cfg, X, y_raw, split, fold)
+        results[task] = res
+        results[task + "_test"] = save_task_outputs(res, fold, os.path.join(OUTPUT_DIR, folder))
+        print(f"\n{task} final test:")
+        for k, v in results[task + "_test"].items():
+            print(f"  {k:<28s}: {v:.4f}")
+    write_readme(results, os.path.join(OUTPUT_DIR, "README_final_outputs.md"))
+
+
 def main():
     global FOLD_OF_DEV
     os.makedirs(FIG_DIR, exist_ok=True)
@@ -650,6 +815,10 @@ def main():
     X, y_raw, split, fold = load_data()
     FOLD_OF_DEV = fold[split == "development"]
     ctx = {}
+
+    if FINAL_ONLY:
+        run_final_only(X, y_raw, split, fold)
+        return
 
 
     weights = [True] if QUICK_MODE else [False, True]
@@ -735,7 +904,9 @@ def main():
         ax[0].legend(); ax[1].legend()
         ctx["fig_test"] = savefig(fig, "final_test_curves.png")
 
-    path = write_report(ctx)+++++++++++++++++++
+    save_task_outputs(final_bin, fold, os.path.join(OUTPUT_DIR, "binary_final_test"))
+    save_task_outputs(final_multi, fold, os.path.join(OUTPUT_DIR, "five_class_final_test"))
+    path = write_report(ctx)
 
 
     print("\n" + "=" * 60)
